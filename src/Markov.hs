@@ -1,9 +1,9 @@
 module Markov (
     Chain,
     NodeEdges,
-    Markov.empty,
     register,
     registerMany,
+    Markov.empty,
     fromList,
     predict,
     predictStd,
@@ -24,10 +24,6 @@ type NodeEdges a = Map a Int
 
 
 
--- | Constructs an empty chain.
-empty :: Chain a
-empty = Data.Map.empty
-
 -- | Gets the edges of a node.
 nodeEdges :: Ord a => a -> Chain a -> NodeEdges a
 nodeEdges = findWithDefault Data.Map.empty
@@ -44,6 +40,10 @@ register current next chain =
 registerMany :: Ord a => [a] -> Chain a -> Chain a
 registerMany (current:next:xs) chain = registerMany (next : xs) (register current next chain)
 registerMany _ chain = chain
+
+-- | Constructs an empty chain.
+empty :: Chain a
+empty = Data.Map.empty
 
 -- | Constructs a chain from a list.
 fromList :: Ord a => [a] -> Chain a
