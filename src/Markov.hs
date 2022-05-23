@@ -30,11 +30,11 @@ nodeEdges = findWithDefault Data.Map.empty
 
 -- | Registers a node and a connected node in a chain.
 register :: Ord a => a -> a -> Chain a -> Chain a
-register current next chain =
-    let edges = nodeEdges current chain in
-    let chance = findWithDefault 0 next edges + 1 in
-    let newEdges = insert next chance edges in
-    insert current newEdges chain
+register current next chain = let
+    edges = nodeEdges current chain
+    chance = findWithDefault 0 next edges + 1
+    newEdges = insert next chance edges
+    in insert current newEdges chain
 
 -- | Registers a list of nodes in a chain.
 registerMany :: Ord a => [a] -> Chain a -> Chain a
