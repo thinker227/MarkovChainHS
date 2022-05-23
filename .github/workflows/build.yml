@@ -1,0 +1,58 @@
+name: build
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+    - 'app/**'
+    - 'src/**'
+    - '**.cabal'
+  pull_request:
+    branches: [ main ]
+    paths:
+    - 'app/**'
+    - 'src/**'
+    - '**.cabal'
+
+permissions:
+  contents: read
+  
+env:
+  GHC_VERSION: '8.10.3'
+  CABAL_VERSION: '3.2'
+
+jobs:
+  build:
+
+    name: build-${{matrix.os}}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-haskell@v1
+      with:
+        ghc-version: ${{ env.GHC_VERSION }}
+        cabal-version: ${{ env.CABAL_VERSION }}
+
+    - name: Cache
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-cabal
+      with:
+        path: ~/.cabal
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/cabal.project') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+      
+    - name: Install dependencies
+      run: |
+        cabal update
+        cabal build --only-dependencies --enable-tests --enable-benchmarks
+      
+    - name: Build
+      run: cabal build --enable-tests --enable-benchmarks all
