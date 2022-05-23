@@ -18,7 +18,7 @@ library
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
     build-depends:
-        base ^>=4.14.3.0,
+        base ^>=4.14.1.0,
         containers ^>= 0.6.5.1,
         random ^>= 1.2.1.1,
     hs-source-dirs:   src
